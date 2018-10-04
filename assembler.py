@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-
 input_file1 = open("program1.lis", "r")
 output_file = open("LIS_machine_code.txt", "w")
 
@@ -9,6 +8,7 @@ codeSection = False
 commentHere = False
 lineCount = 1
 jump = 0
+output = ""
 memory = []
 jumpMarkers = dict()
 
@@ -80,7 +80,7 @@ for line in input_file2:
 			rx = format(int(line[0]), "02b")
 		 	const = format(int(line[1]), "03b")
 			
-			output_file.write(op + rx + const + "\n")
+			output = op + rx + const
 
 		elif (line[0:3] == 'SWD'):
 			line = line.replace("SWD", "")
@@ -89,8 +89,8 @@ for line in input_file2:
 			op = "11"
 			rx = format(int(line[0]), "02b")
 		 	const = format(int(line[1]), "03b")
-			
-			output_file.write(op + rx + const + "\n")
+
+			output = op + rx + const
 
 		elif (line[0:3] == 'SLE'):
 			line = line.replace("SLE", "")
@@ -99,8 +99,8 @@ for line in input_file2:
 			op = "110"
 			rx = format(int(line[0]), "02b")
 		 	const = format(int(line[1]), "02b")
-			
-			output_file.write(op + rx + const + "\n")
+
+			output = op + rx + const
 
 		elif (line[0:3] == 'SHL'):
 			line = line.replace("SHL", "")
@@ -110,7 +110,7 @@ for line in input_file2:
 			rx = format(int(line[0]), "02b")
 		 	const = format(int(line[1]), "02b")
 			
-			output_file.write(op + rx + const + "\n")
+			output = op + rx + const
 
 		elif (line[0:3] == 'ADD'):
 			line = line.replace("ADD", "")
@@ -119,8 +119,8 @@ for line in input_file2:
 			op = "100"
 			rx = format(int(line[0]), "02b")
 		 	ry = format(int(line[1]), "02b")
-			
-			output_file.write(op + rx + ry + "\n")
+
+			output = op + rx + ry
 
 		elif (line[0:3] == 'XOR'):
 			line = line.replace("XOR", "")
@@ -129,8 +129,8 @@ for line in input_file2:
 			op = "101"
 			rx = format(int(line[0]), "02b")
 		 	ry = format(int(line[1]), "02b")
-			
-			output_file.write(op + rx + ry + "\n")
+
+			output = op + rx + ry
 
 		elif (line[0:3] == 'JIF'):
 			line = line.replace("JIF", "")
@@ -153,14 +153,23 @@ for line in input_file2:
 				const = const[12:16]
 			else:
 				const = format(const, "04b")
-			
-			output_file.write(op + const + "\n")
+
+			output = op + const
 
 		elif (line[0:3] == 'HLT'):
 			line = line.replace("HLT", "")
 
 			op = "000"
-			
-			output_file.write(op + "11" + "11" + "\n")
 
+			output = op + "11" + "11" 
+
+		numOnes = output.count("1")
+		if ((numOnes % 2) == 0 and output != ""):
+			output = '0' + output
+		elif (output != ""):
+			output = '1' + output
+
+		if (output != ""):
+			output_file.write(output + "\n")
+		output = ""
 
