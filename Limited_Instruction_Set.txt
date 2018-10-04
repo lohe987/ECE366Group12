@@ -1,0 +1,28 @@
+
+**Instruction Set Architecture for the Limited Instruction Set**
+
+ADD 100 xx, yy
+		Rx  Ry
+
+LWD 01 xx, yyy
+	   Rx  constant
+
+SWD 11 xx, yyy
+	   Rx, constant
+
+SLE 110 xx, yy
+	    Rx  Ry
+
+XOR	101 xx, yy
+		Rx  constant
+
+SHL 111 xx, yy
+		Rx  Ry
+
+JIF 010 xxxx
+		constant
+**If r3 == 1 jump (PC = PC + constant)**
+**else PC = PC + 1**
+
+HLT	000 11 11
+
