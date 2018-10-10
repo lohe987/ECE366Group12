@@ -1,28 +1,28 @@
 
 **Instruction Set Architecture for the Limited Instruction Set**
 
-ADD 100 xx, yy
+ADD 100 xx, yy			// Add
 		Rx  Ry
 
-LWD 01 xx, yyy
-	   Rx  constant
-
-SWD 11 xx, yyy
+LWD 01 xx, yyy			// Load Word
 	   Rx, constant
 
-SLE 110 xx, yy
+SWD 11 xx, yyy			// Store word
+	   Rx, constant
+
+SLE 110 xx, yy			// Set less than
 	    Rx  Ry
 
-XOR	101 xx, yy
-		Rx  constant
+XOR 101 xx, yy			// Xor
+	   Rx  constant
 
-SHL 111 xx, yy
+SHL 111 xx, yy			// Shift Left
 		Rx  Ry
 
-JIF 010 xxxx
+JIF 010 xxxx			// Jump if
 		constant
 **If r3 == 1 jump (PC = PC + constant)**
 **else PC = PC + 1**
 
-HLT	000 11 11
+HLT	000 11 11		// Halt program/end it
 
