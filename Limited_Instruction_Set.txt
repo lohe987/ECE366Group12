@@ -1,22 +1,37 @@
 
 **Instruction Set Architecture for the Limited Instruction Set**
 
-ADD 100 xx, yy
+ADD 100 xx, yy			// Add
 		Rx  Ry
 
+<<<<<<< HEAD
 LWD 001 xx, yy
 	   Rx  Ry
 
 SWD 011 xx, yy
 	   Rx, Ry
+=======
+LWD 01 xx, yyy			// Load Word
+	   Rx, constant
 
-SLE 110 xx, yy
+SWD 11 xx, yyy			// Store word
+	   Rx, constant
+>>>>>>> 0137b13f45ce0d6559aef3fca4e2dfe9815ac874
+
+SLE 110 xx, yy			// Set less than
 	    Rx  Ry
 
+<<<<<<< HEAD
 INIT 101 xx, yy
 		Rx	Ry
 
 XOR	0001 x, yy
+=======
+XOR 101 xx, yy			// Xor
+	   Rx  constant
+
+SHL 111 xx, yy			// Shift Left
+>>>>>>> 0137b13f45ce0d6559aef3fca4e2dfe9815ac874
 		Rx  Ry
 	 (Ry cannot be r0)
 
@@ -27,11 +42,12 @@ ADDI 111 xx, yy
 ADDN 111 11 00
 (Add negative one to r3)
 
-JIF 010 xxxx
+JIF 010 xxxx			// Jump if
 		constant
 **If r3 == 1 jump (PC = PC + constant)**
 **else PC = PC + 1**
 
+<<<<<<< HEAD
 HLT	000 00 00
 
 SLER 0000 xx, y
@@ -41,4 +57,7 @@ CNTR0 0001 00 0
 		   r0
 (Count the number of bits in r0 and place this value in r3)
 
+=======
+HLT	000 11 11		// Halt program/end it
+>>>>>>> 0137b13f45ce0d6559aef3fca4e2dfe9815ac874
 
