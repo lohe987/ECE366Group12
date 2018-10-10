@@ -33,7 +33,11 @@ JIF 010 xxxx			// Jump if
 HLT	000 00 00
 
 SLER 0000 xx, y		//Set less than or equal to where Ry is the value of a register
-		 Rx	 Ry (must be R1)
+		 Rx	 Ry (must be r0)
+		 (Rx cannot be r1)
+
+SUBR0 0000 0, yy
+			  Ry 
 
 CNTR0 0001 00 0		//Count the number of bits in r0 and place this value in r3	
 		   r0

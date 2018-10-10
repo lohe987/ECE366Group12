@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-input_file1 = open("program2.lis", "r")
+input_file1 = open("program1.lis", "r")
 output_file = open("LIS_machine_code.txt", "w")
 
 memSection = False
@@ -174,6 +174,14 @@ for line in input_file1:
 			op = "0001"
 
 			output = op + "000" 
+
+		elif (line[0:5] == 'SUBR0'):
+			line = line.replace("SUBR0", "")
+
+			op = "0000"
+		 	ry = format(int(line[0]), "02b")
+
+			output = op + '0' + ry
 
 
 		elif (line[0:3] == 'HLT'):

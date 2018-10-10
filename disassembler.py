@@ -4,6 +4,7 @@ input_file = open("LIS_machine_code.txt", "r")
 output_file = open("program2_disassembled.lis", "w")
 
 for line in input_file:
+	wrongOp = False
 	if (line == "\n"):
 		continue
 
@@ -21,12 +22,21 @@ for line in input_file:
 		output_file.write(op + "\n")
 		continue
 
-	op_bin = line[1:8]
-
-	if (op_bin == "0001000"):
+	elif (op_bin == "0001000"):
 		op = "CNTR0"
 		output_file.write(op + "\n")
 		continue
+	
+	op_bin = line[1:6]
+
+	if (op_bin == "00000"):
+		op = "SUBR0"
+		ry = str(int(line[6:8], 2)) 
+		if (ry == '1'):
+			wrongOp = True
+		if (wrongOp == False):
+			output_file.write(op + " r" + ry + "\n")
+			continue
 
 	op_bin = line[1:5]
 	
@@ -39,8 +49,8 @@ for line in input_file:
 
 	elif (op_bin == "0000"):
 		op = "SLER"
-		rx = str(int(line[4:6], 2))
-		ry = str(int(line[6], 2))
+		rx = str(int(line[5:7], 2))
+		ry = str(int(line[7], 2))
 		output_file.write(op + " r" + rx + ", r" + ry + "\n")
 		continue
 
@@ -64,14 +74,14 @@ for line in input_file:
 		op = "LWD"
 		rx = str(int(line[4:6], 2))
 		ry = str(int(line[6:8], 2))
-		output_file.write(op + " r" + rx + ", " + ry + "\n")
+		output_file.write(op + " r" + rx + ", r" + ry + "\n")
 		continue
 
 	elif (op_bin == "011"):
 		op = "SWD"
 		rx = str(int(line[4:6], 2))
 		ry = str(int(line[6:8], 2))
-		output_file.write(op + " r" + rx + ", " + ry + "\n")
+		output_file.write(op + " r" + rx + ", r" + ry + "\n")
 		continue
 
 	elif (op_bin == "110"):
@@ -98,4 +108,5 @@ for line in input_file:
 		const = str(const)
 		
 		output_file.write(op + " " + const + "\n")
+		
 
