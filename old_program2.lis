@@ -1,0 +1,94 @@
+*memory
+	T: ~hb~ 19
+	Temp: ~hb~ 0
+	One: ~hb~ 1
+	Neg_One: ~hb~ -1
+	Array_Index: ~hb~ 9
+	Num_Ones: ~hb~ 0
+	Best_Match: ~hb~ 0
+	Best_Match_Count: ~hb~ 1
+	Array_Size: ~hb~ 108
+	Pattern_Array: ~hb~ 0
+
+*instructions
+	
+	LWD r2, [4]
+loop1:
+	//init then add is used to move from r2 to proper register.
+	LWD r3, [0]
+	LWD r2, [r2]
+	INIT r1, 0
+	ADD r1, r2
+	XOR r1, r3
+
+	//Variable used to loop through 7 bits.
+	LWD r3, [2]
+loop2:
+	INIT r2, 0
+	ADD r2, r1
+jumpBack3:
+	JIF loop1
+	XOR r2, r3
+	SLE r2, 0
+	JIF oneFound
+	LW r3, [2]
+	JIF skip1
+
+oneFound:
+	LWD r3, [5]
+	ADDI r3, 1
+	//Since r0 must be 0, we must always move a value to r0 to
+	//store a variable in memory.
+	INIT r0, 0
+	ADD r0, r3
+	SWD r0, [5]
+	LWD r3, [2]
+
+skip1:
+	SHL r3, 1
+	ADDI r0, 1 
+	SLE r0, 7
+	JIF loop2
+jumpBack2:
+	JIF jumpBack3
+
+	//Load the current number of ones into r0.
+	LW r2, [5]
+jumpBack1:
+	JIF jumpBack2
+	LWD r2, [6]
+	INIT r0, 0
+	ADD r0, r2
+	//If this condition is not met, the number of ones is greater than
+	//the best match and a new best match must be created.
+	SLE r2, r0
+	JIF check
+	SWD r0, [1]
+	INIT r0, 0
+	ADD r0, r2
+	SWD r0, [6] //New best match.
+	//Best match found, so skip to end of loop.
+	INIT r3, 0 
+	JIF skip2
+check:
+	ADDI r0, -1
+	//If this condition is met, the number of ones is less
+	//than the best match count.
+	SLE r2, r0
+	JIF skip2 
+	//Else, there is a match for the best match, so we add to the best
+	//match count.
+	LW r3, [7]
+	ADDI r3, 1
+	INIT r0, 0
+	ADD r0, r3
+	SW r0, [7]
+
+skip2:
+	LDW r2, [4]
+	ADDI r2, 1
+	SLE r2, 108
+	JIF jumpBack1
+
+	
+	

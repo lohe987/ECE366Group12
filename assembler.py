@@ -1,43 +1,26 @@
 #!/usr/bin/env python
 
-input_file1 = open("program1.lis", "r")
+input_file1 = open("program2.lis", "r")
 output_file = open("LIS_machine_code.txt", "w")
 
 memSection = False
 codeSection = False
 commentHere = False
-lineCount = 1
-jump = 0
 output = ""
 memory = []
 jumpMarkers = dict()
 
-#Find all of the jump markers in the code before creating machine code.
-#This is done so we can know the constant jump value for instructions
-#jumping ahead of their own position.
+def TwosComplement(num, numBits):
+	if (num < 0):
+		num = (1 << numBits) + num
+	else:
+		if ((num & (1 << (numBits - 1))) != 0):
+			num -= (1 << numBits)
+	
+	return num
+
+
 for line in input_file1:
-	line = line.replace("\n", "")
-	line = line.replace(" ", "")
-
-	line = line.split('/')
-	line = line[0]
-
-	if (line == "*instructions"):
-		codeSection = True
-
-	if (codeSection == True):
-		if (line.find(':') != -1):
-			line = line.replace(":", "")
-			jumpMarkers[line] = lineCount
-		elif (len(line.strip()) != 0):
-			lineCount += 1
-		
-codeSection = False
-lineCount = 1
-
-input_file2 = open("program1.lis", "r")
-
-for line in input_file2:
 	if (line == "\n"):
 		continue
 
@@ -64,9 +47,6 @@ for line in input_file2:
 		memSection = True
 
 	if (codeSection == True):
-		if (line.find(':') == -1 and len(line.strip()) != 0):
-			lineCount += 1
-
 		line = line.replace("\t", "")
 		line = line.replace("r", "")
 		line = line.replace("[", "")
@@ -76,9 +56,9 @@ for line in input_file2:
 			line = line.replace("LWD", "")
 			line = line.split(',')
 
-			op = "01"
+			op = "001"
 			rx = format(int(line[0]), "02b")
-		 	const = format(int(line[1]), "03b")
+		 	const = format(int(line[1]), "02b")
 			
 			output = op + rx + const
 
@@ -86,11 +66,22 @@ for line in input_file2:
 			line = line.replace("SWD", "")
 			line = line.split(',')
 
-			op = "11"
+			op = "011"
 			rx = format(int(line[0]), "02b")
-		 	const = format(int(line[1]), "03b")
+		 	const = format(int(line[1]), "02b")
 
 			output = op + rx + const
+
+		elif (line[0:4] == 'SLER'):
+			line = line.replace("SLER", "")
+			line = line.split(',')
+
+			op = "0000"
+			rx = format(int(line[0]), "02b")
+		 	ry = format(int(line[1]), "01b")
+			ry = ry[0]
+
+			output = op + rx + ry
 
 		elif (line[0:3] == 'SLE'):
 			line = line.replace("SLE", "")
@@ -106,10 +97,35 @@ for line in input_file2:
 			line = line.replace("SHL", "")
 			line = line.split(',')
 
+			op = "0001"
+			rx = format(int(line[0]), "02b")
+		 	const = format(int(line[1]), "01b")
+			const = const[0]
+			
+			output = op + rx + const
+
+		elif (line[0:4] == 'ADDN'):
+			line = line.replace("ADDN", "")
+
+			op = "1111"
+
+			output = op + "100" 
+
+		elif (line[0:4] == 'ADDI'):
+			line = line.replace("ADDI", "")
+			line = line.split(',')
+	
+			const = int(line[1])
+			if (const < 0):
+				const *= -1
+				const = 0b1111111111111111 - const + 1
+				const = format(const, "02b")
+				const = const[14:16]
+			else:
+				const = format(int(line[1]), "02b")
+
 			op = "111"
 			rx = format(int(line[0]), "02b")
-		 	const = format(int(line[1]), "02b")
-			
 			output = op + rx + const
 
 		elif (line[0:3] == 'ADD'):
@@ -122,8 +138,8 @@ for line in input_file2:
 
 			output = op + rx + ry
 
-		elif (line[0:3] == 'XOR'):
-			line = line.replace("XOR", "")
+		elif (line[0:4] == 'INIT'):
+			line = line.replace("INIT", "")
 			line = line.split(',')
 
 			op = "101"
@@ -132,36 +148,40 @@ for line in input_file2:
 
 			output = op + rx + ry
 
+		elif (line[0:3] == 'XOR'):
+			line = line.replace("XOR", "")
+			line = line.split(',')
+
+			op = "0001"
+			rx = format(int(line[0]), "01b")
+			rx = rx[0]
+		 	ry = format(int(line[1]), "02b")
+
+			output = op + rx + ry
+
 		elif (line[0:3] == 'JIF'):
 			line = line.replace("JIF", "")
 			line = line.split(' ')
-			label = line[0]
-
-			position = jumpMarkers[label]
-
 			op = "010"
-
-			if (lineCount < position):
-				const = position - lineCount + 1
-			else:
-				const = -(lineCount - position - 1)
-
-			if (const < 0):
-				const *= -1
-				const = 0b1111111111111111 - const + 1
-				const = format(const, "04b")
-				const = const[12:16]
-			else:
-				const = format(const, "04b")
+			const = TwosComplement(int(line[0]), 4)
+			const = format(const, "04b")
 
 			output = op + const
+
+		elif (line[0:5] == 'CNTR2'):
+			line = line.replace("CNTR2", "")
+
+			op = "0001"
+
+			output = op + "000" 
+
 
 		elif (line[0:3] == 'HLT'):
 			line = line.replace("HLT", "")
 
 			op = "000"
 
-			output = op + "11" + "11" 
+			output = op + "00" + "00" 
 
 		numOnes = output.count("1")
 		if ((numOnes % 2) == 0 and output != ""):

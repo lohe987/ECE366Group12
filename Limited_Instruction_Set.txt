@@ -4,25 +4,41 @@
 ADD 100 xx, yy
 		Rx  Ry
 
-LWD 01 xx, yyy
-	   Rx  constant
+LWD 001 xx, yy
+	   Rx  Ry
 
-SWD 11 xx, yyy
-	   Rx, constant
+SWD 011 xx, yy
+	   Rx, Ry
 
 SLE 110 xx, yy
 	    Rx  Ry
 
-XOR	101 xx, yy
-		Rx  constant
+INIT 101 xx, yy
+		Rx	Ry
 
-SHL 111 xx, yy
+XOR	0001 x, yy
 		Rx  Ry
+	 (Ry cannot be r0)
+
+ADDI 111 xx, yy
+		 Rx  constant
+		 (constant cannot be 0)
+
+ADDN 111 11 00
+(Add negative one to r3)
 
 JIF 010 xxxx
 		constant
 **If r3 == 1 jump (PC = PC + constant)**
 **else PC = PC + 1**
 
-HLT	000 11 11
+HLT	000 00 00
+
+SLER 0000 xx, y
+		 Rx	 Ry (must be R1)
+
+CNTR0 0001 00 0
+		   r0
+(Count the number of bits in r0 and place this value in r3)
+
 
