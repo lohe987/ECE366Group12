@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 input_file1 = open("program1.lis", "r")
-output_file = open("LIS_machine_code.txt", "w")
+output_file = open("LIS_machine_code_program1.txt", "w")
 
 memSection = False
 codeSection = False
