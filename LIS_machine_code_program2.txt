@@ -1,59 +1,71 @@
-11010001
-11010100
-10110001
-01010011
-01110010
-01010101
-10110001
-01010011
-01110001
-01010110
-10110001
-11010001
-01010110
-10011001
-01111011
-10110001
-11010001
-00011000
-01010011
-10011100
-00010010
-10001011
-11010010
-10101010
-00011000
-10111110
-11010010
-00011000
-11111001
-00010010
-10101001
-01100011
-00100100
-10111110
-11011101
-00100111
-11111100
-10101001
-01100011
-10100011
-01010000
-00011000
-10100110
-11111001
-10101001
-00011110
-01111101
-10111110
-11010001
-00011000
-10101010
-11111001
-11010010
-10011100
-11111111
-10011111
-00000101
-10101001
-00000000
+11010001 //INIT: rx = imm
+11010100 //INIT: rx = imm
+10110001 //SWD: M[ry] = rx
+01010011 //INIT: rx = imm
+01110010 //ADDI: rx = rx + imm
+01010101 //INIT: rx = imm
+10110001 //SWD: M[ry] = rx
+01010011 //INIT: rx = imm
+01110001 //ADDI: rx = rx + imm
+01010110 //INIT: rx = imm
+10110001 //SWD: M[ry] = rx
+11010001 //INIT: rx = imm
+01010110 //INIT: rx = imm
+10011001 //LWD: rx = M[ry]
+01111011 //ADDI: rx = rx + imm
+10110001 //SWD: M[ry] = rx
+01010000 //INIT: rx = imm
+01010101 //INIT: rx = imm
+111100101 //ADDI: rx = rx + imm
+11110101 //ADDI: rx = rx + imm
+01100110100 //SLE: If rx < ry, then r3 = 1, Else r3 = 0
+10101101 //JIF: If r3 = 1, then jump (PC = PC + imm), Else do nothing
+111101100 //ADDI: rx = rx + imm
+01011010 //INIT: rx = imm
+10011010 //LWD: rx = M[ry]
+01111011 //ADDI: rx = rx + imm
+10110010 //SWD: M[ry] = rx
+11010001 //INIT: rx = imm
+00011000 //LWD: rx = M[ry]
+01010011 //INIT: rx = imm
+10011100 //LWD: rx = M[ry]
+00010010 //LWD: rx = M[ry]
+10001011 //XOR: rx = rx XOR ry
+00001000 //CNTR0: Count the number of 1's in r0
+11010010 //INIT: rx = imm
+00101010 //JIF: If r3 = 1, then jump (PC = PC + imm), Else do nothing
+00011000 //LWD: rx = M[ry]
+10111110 //SWD: M[ry] = rx
+11010010 //INIT: rx = imm
+00011000 //LWD: rx = M[ry]
+11111001 //ADDI: rx = rx + imm
+00010010 //LWD: rx = M[ry]
+00101001 //JIF: If r3 = 1, then jump (PC = PC + imm), Else do nothing
+11101100 //SLE: If rx < ry, then r3 = 1, Else r3 = 0
+10100100 //JIF: If r3 = 1, then jump (PC = PC + imm), Else do nothing
+10111110 //SWD: M[ry] = rx
+11011101 //INIT: rx = imm
+10100111 //JIF: If r3 = 1, then jump (PC = PC + imm), Else do nothing
+01111100 //ADDN: r3 = r3 - 1
+00101001 //JIF: If r3 = 1, then jump (PC = PC + imm), Else do nothing
+11100011 //SLE: If rx < ry, then r3 = 1, Else r3 = 0
+00100011 //JIF: If r3 = 1, then jump (PC = PC + imm), Else do nothing
+110100100 //INIT: rx = imm
+00011000 //LWD: rx = M[ry]
+00100110 //JIF: If r3 = 1, then jump (PC = PC + imm), Else do nothing
+11111010 //ADDI: rx = rx + imm
+00101001 //JIF: If r3 = 1, then jump (PC = PC + imm), Else do nothing
+00011110 //LWD: rx = M[ry]
+01111101 //ADDI: rx = rx + imm
+10111110 //SWD: M[ry] = rx
+11010001 //INIT: rx = imm
+00011000 //LWD: rx = M[ry]
+00101010 //JIF: If r3 = 1, then jump (PC = PC + imm), Else do nothing
+11111001 //ADDI: rx = rx + imm
+11010010 //INIT: rx = imm
+10011100 //LWD: rx = M[ry]
+11111111 //ADDI: rx = rx + imm
+10011111 //LWD: rx = M[ry]
+10000101 //SLER: If rx < r0, then r3 = 1, Else r3 = 0
+00101001 //JIF: If r3 = 1, then jump (PC = PC + imm), Else do nothing
+00000000 //HLT: End the program

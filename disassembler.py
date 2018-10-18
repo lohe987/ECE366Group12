@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-input_file = open("LIS_machine_code_program1.txt", "r")
-output_file = open("program1_disassembled.lis", "w")
+input_file = open("LIS_machine_code_program2.txt", "r")
+output_file = open("program2_disassembled.lis", "w")
 
 output = "\n"
 

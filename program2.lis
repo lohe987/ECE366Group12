@@ -1,3 +1,6 @@
+//This memory section is only symbolic to allow for easier 
+//understanding of the program. All values loaded into memory
+//first have to be initialized and then loaded through a register.
 *memory
 	One: ~hb~ 1
 	Array_Index: ~hb~ 5
@@ -11,44 +14,73 @@
 
 *instructions
 	//Create the values in memory needed.
-	INIT r0, 1
-	INIT r1, 0
+	//Place a 1 in memory.
+	INIT r0, 1 //The value to be placed in memory.
+	INIT r1, 0 //The memory location.
 	SWD r0, [r1]
+	//Place the array index (= 5) in memory.
 	INIT r0, 3
 	ADDI r0, 2
 	INIT r1, 1
 	SWD r0, [r1]
+	//Place in memory a value that is used as a pointer
+	//to memory locations.
 	INIT r0, 3
 	ADDI r0, 1
-	INIT r1, [2]
+	INIT r1, 2
 	SWD r0, [r1]
+	//Place a 1 in the memory location for best match 
+	//count.
 	INIT r0, 1
 	INIT r1, 2
 	LWD r2, [r1]
 	ADDI r2, 3
 	SWD r0, [r1]
 
+	INIT r0, 0 //Add onto this to get to 104.
+	INIT r1, 1 //Used to count that 5 has been added 20 times.
+//Loop to add 5 to r0 20 times to get the value of 100.
+addLoop:
+	ADDI r0, 5
+	ADDI r1, 1
+	SLE r1, 20
+	JIF -3 //addLoop
+	//Add 4 to get to 104, the value for the index of the 
+	//last element in the array.
+	ADDI r1, 4 
+
+	//Store the Last_Pattern_Index value into memory.
+	INIT r2, 2
+	LWD r2, [r2]
+	ADDI r2, 3
+	SWD r0, [r2]
+
+	//Place the array index in r2.
 	INIT r0, 1
 	LWD r2, [r0]
 
 loop1:
-	INIT r0, 3
-	LWD r3, [r0]
-	LWD r0, [r2]
-	XOR r0, r3
+	INIT r0, 3 //Memory location for T.
+	LWD r3, [r0] //Load T into r3.
+	LWD r0, [r2] //Load the current pattern_array element into r0.
+	//Perform XOR on r0 and r3 to obtain a pattern with 0's for 
+	//bit matches.
+	XOR r0, r3 
 
-	//Counts the number of bits in register 2.
+	//Counts the number of bits in r0.
 	//The result is placed in r3.
 	CNTR0
 	//Load the "pointer" to the memory spot for Num_Ones
 	//and place the count result there.
 	INIT r0, 2
-jumpBack5:
+	//Jump location for moving back up to loop1 from the end of the loop.
+jumpBack5: 
 	JIF -6 //loop1
 	LWD r2, [r0]
-	SWD r3, [r2]
+	SWD r3, [r2] //Place the count result.
 
-	INIT r0, 2
+	//Load the best current best mach into r0.
+	INIT r0, 2 
 	LWD r2, [r0]
 	ADDI r2, 1
 	LWD r0, [r2]
@@ -56,7 +88,7 @@ jumpBack4:
 	JIF -7 //jumpBack5
 	
 	//Is Num_Ones < Best_Match?
-	SLE r0, r3
+	SLE r3, r0
 	JIF 4 //check
 	//If not, then there is a new best match, we then
 	//store it in the Best_Match place
@@ -64,35 +96,44 @@ jumpBack4:
 	INIT r3, 1
 	JIF 7 //skip1
 
+//Check if the best match is the same as the current best match
+//and update the best match count if so.
 check:
+	//Add -1 to the best match count
 	ADDN
 jumpBack3:
 	JIF -7 //jumpBack4
+	//If best (match count - 1) is not equal to the current num ones
+	//then best match count and num ones must be equal
 	SLE r0, r3
-	JIF  3 //skip2
-	INIT r0, 0
+	JIF  3 //skip1 and then skip2, don't add to best match count.
+	INIT r0, 4 //Pointer. 
 	LWD r2, [r0]
 skip1:
 	JIF 6 //skip2
-	ADDI r2, 1
+	ADDI r2, 2 //Update pointer to reach Best_Match_Count.
 jumpBack2:
 	JIF -7 //jumpBack3
-	LWD r3, [r2]
-	ADDI r3, 1
-	SWD r3, [r2]
+	LWD r3, [r2] //Load Best_Match_Count.
+	ADDI r3, 1 //Add one to Best_Match_Count.
+	SWD r3, [r2] //Store the new count.
 
 skip2:
+	//Load the array index.
 	INIT r0, 1
 	LWD r2, [r0]
 jumpBack1:
 	JIF -6 //jumpBack2
-	ADDI r2, 1
+	ADDI r2, 1 //Add to the array index.
+	//Load the index for the last pattern_array element.
 	INIT r0, 2
 	LWD r3, [r0]
-	ADDI r3, 3
+	ADDI r3, 3 //To reach Last_Pattern_Index.
 	LWD r3, [r3]
+	//Check if we have reached the index of the last element,
+	//if so, end the loop.
 	SLER r2, r3
 	JIF -7 //jumpBack1
 
-	HLT
+	HLT //End the program.
 

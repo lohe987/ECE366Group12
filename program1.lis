@@ -1,3 +1,5 @@
+//This memory section is only symbolic, used to clarify the program. 
+//It is not used when assembling or disassembling.
 *memory
 	P: ~hb~ 10
 	Q: ~hb~ 21
@@ -6,17 +8,23 @@
 
 *instructions
 	
-	INIT r1, 1
-	INIT r2, 1
-	INIT r0, 0
+	INIT r0, 1 //Begin the result at 1.
+	INIT r2, 0 //Current power counter.
 
+//Jump labels are only symbolic, to make the program more clear.
 loop1:
-	INIT r3, 3
-	LWD r0, [3] //Store current power.
-	ADD r2, 3
-	ADD r2, 3
+	INIT r3, 2
+	LWD r0, [r3] //Load current result.
+	//Acts as multiplying by 6 each loop. After the first loop
+	//this is acting upon the result of the modulus operation.
+	ADD r0, 3
+	ADD r0, 3
 
+//Compute the modulus and carry this result into the next loop.
 loop2:
+	//If the subtraction to find the modulus procedure
+	//has produced a negative result, jump out of this
+	//loop.
 	SLE r0, 0
 	JIF 6 //out1
 jumpBack4:
@@ -26,30 +34,34 @@ jumpBack4:
 jumpBack3:
 	JIF -3 //loop2
 	INIT r1, 2
-	SWD r0, [r1] //Store result.
+	SWD r0, [r1] //Store current result.
 out1:
 	JIF 5 //out2
 jumpBack2:
 	JIF -7 //jumpBack4, to jump to loop1
 	SUBR0 r3 //Subtract Q.
-	INIT r3, 1
+	INIT r3, 1 //To force a jump.
 	JIF -7 //jumpBack3, to jump to loop2
 
 out2:
 	INIT r1, 2
-	LWD r1, [r1] //Set r1 back to before it was negative.
+	LWD r1, [r1] //Set r1 back to the result before it was negative.
 
 	INIT r0, 0
 	LWD r0, [r0] //Set r0 to current power.
 jumpBack1:
 	JIF -7 //jumpBack2
-	ADDI r0, 1 
+	ADDI r2, 1 //Add to current power counter.
 	INIT r3, 0
 	LWD r3, [r3] //Set r3 to original power.
-	SLER r3, r0
+	//If the power counter is equal to the desired power, we terminate
+	//the loop.
+	SLER r3, r2
 	JIF 3 //out3
+	//Force a jump back to the start of loop1. Need to jump back a couple
+	//of times to reach the start.
 	INIT r3, 1
 	JIF -7 //jumpBack1 
 
 out3: 
-	HLT
+	HLT //End the program.
